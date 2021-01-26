@@ -15,8 +15,10 @@ class ofxScreenSaverApp : public ofBaseApp{
 public:
 
 	//if you implement an ofxScreenSaverApp, you must be able to provide valid settings for your window
-	virtual void setupWindowSettings(ofxScreenSaverWindowSettings & set) = 0;
-	
+	virtual void setupWindowSettings(ofxScreenSaverWindowSettings & set, bool isPreviewWindow, const ofRectangle & r) = 0;
+
+	virtual bool hasConfigureSheet(){return false;};
+
 protected:
 
 };

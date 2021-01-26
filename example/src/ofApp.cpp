@@ -1,13 +1,28 @@
 #include "ofApp.h"
 
 
-void ofApp::setupWindowSettings(ofxScreenSaverWindowSettings & set){
+ofApp::~ofApp(){
+	ofLogNotice("ofApp") << "~ofApp()";
+}
 
+
+void ofApp::setupWindowSettings(ofxScreenSaverWindowSettings & set, bool isPreviewWindow, const ofRectangle & r){
+
+	//choose specs for your GL window
 	set.depthBits = 24;
 	set.stencilBits = 0;
 	set.alphaBits = 8;
 	set.numSamples = 4; //MSAA
-	set.retina = true;
+	set.retina = false;
+
+	isPreview = isPreviewWindow; //is this window the little preview on SystemPreferences?
+	myRect = r; //rect in global OSX desktop space (so you can figure out what monitor you are in multi-monitor scenarios)
+}
+
+
+bool ofApp::hasConfigureSheet(){
+	ofLogNotice("ofApp") << "hasConfigureSheet()";
+	return true;
 }
 
 
@@ -31,7 +46,9 @@ void ofApp::draw(){
 	ofDrawBitmapStringHighlight("ofApp::draw()  frame: " + ofToString(ofGetFrameNum()) +
 								"\nofGetWidth: " + ofToString(ofGetWidth()) +
 								"\nofGetHeight: " + ofToString(ofGetHeight()) +
-								"\nframerate: " + ofToString(ofGetFrameRate(),1)
+								"\nframerate: " + ofToString(ofGetFrameRate(),1) +
+								"\nisPreview: " + ofToString(isPreview) +
+								"\nRect:" + ofToString(myRect)
 								,
 								30, 30);
 

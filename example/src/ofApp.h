@@ -12,6 +12,9 @@ class ofApp : public ofBaseApp{
 #endif
 
 	public:
+
+		~ofApp();
+
 		void setup();
 		void update();
 		void draw();
@@ -29,8 +32,12 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		#ifdef OF_SCREEN_SAVER
-		void setupWindowSettings(ofxScreenSaverWindowSettings & set);
+		//this will be called before your app starts so you can setup a few things - similar to main.cpp
+		void setupWindowSettings(ofxScreenSaverWindowSettings & set, bool isPreviewWindow, const ofRectangle & r);
+		bool hasConfigureSheet();
 		#endif
 
+		ofRectangle myRect;
+		bool isPreview = false;
 		ofTexture tex;
 };

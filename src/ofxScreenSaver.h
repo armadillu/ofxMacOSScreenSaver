@@ -19,7 +19,7 @@ class ofApp;
 
 	// add a configure sheet //
 	IBOutlet id configSheet;
-	
+
     BOOL preview;
     BOOL bMainFrame; //main monitor
     BOOL bUseMultiScreen; //from defaults, draw on all screens or only on main?
@@ -29,7 +29,6 @@ class ofApp;
 	std::shared_ptr<ofxScreenSaverWindow> win;
 	std::shared_ptr<ofApp> app;
 
-	
     NSRect bounds;
 	float lastOfFramerate;
 }

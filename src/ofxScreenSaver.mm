@@ -11,7 +11,6 @@
 #import "ofxScreenSaver.h"
 #include "ofApp.h"
 
-
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)
 #define BUNDLE_ID_STRING_LIT @ STRINGIZE2(BUNDLE_IDENTIFIER)
@@ -42,11 +41,13 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	preview = isPreview;
 	bounds = frame;
 
-
 	//TODO! read defaults here
-	bUseMultiScreen = false;
+	bUseMultiScreen = true;
 
 	numInstances++;
+
+	ofLogNotice("ofxScreenSaver") << "start anim : creating app & window " << thisInstance;
+	app = std::make_shared<ofApp>();
 
 	return self;
 }
@@ -68,12 +69,10 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 	if(!isDisabledMonitor) {
 
-		ofLogNotice("ofxScreenSaver") << "start anim : creating app & window " << thisInstance;
-
-		app = std::make_shared<ofApp>();
 
 		ofxScreenSaverWindowSettings settings;
-		app->setupWindowSettings(settings); //ask our guest app for what window settings it wants
+		ofRectangle r = ofRectangle(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+		app->setupWindowSettings(settings, preview, r); //ask our guest app for what window settings it wants
 
 		float deviceFactor = [[self window] backingScaleFactor];
 		float retina = settings.retina? deviceFactor : 1;
@@ -87,7 +86,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 		string npath = [[[NSBundle bundleForClass:[self class]] resourcePath] UTF8String] + string("/data/");
 		ofSetDataPathRoot( npath );
 
-		ofGetMainLoop()->run(win, std::move(app));
+		ofGetMainLoop()->run(win, app);
 
 		lastOfFramerate = ofGetTargetFrameRate();
 		if(lastOfFramerate > 0.0){
@@ -105,9 +104,9 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (void)stopAnimation {
 	ofLogNotice("ofxScreenSaver") << "startAnimation " << thisInstance;
-	if(app != nullptr) {
-		app = nullptr;
-	}
+//	if(app != nullptr) {
+//		app = nullptr;
+//	}
 
 	[super stopAnimation];
 }
@@ -125,9 +124,6 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 - (void)setFrameSize:(NSSize)newSize{
 	ofLogNotice("ofxScreenSaver") << "setFrameSize";
 	[super setFrameSize:newSize];
-//	if(win.get() && win->getGlView()){
-//		[win->getGlView() setFrameSize:newSize];
-//	}
 }
 
 
@@ -149,7 +145,11 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (BOOL)hasConfigureSheet{
-	return NO;
+	if(!app.get()){
+		ofLogError("ofxScreensaver") << "too early for hasConfigureSheet! " << thisInstance ;
+		return NO;
+	}
+	return app->hasConfigureSheet() ? YES : NO;
 }
 
 
@@ -159,6 +159,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
 	
 	if (!configSheet){
+		NSLog( @"loading configure sheet..." );
 		if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self]){
 			NSLog( @"Failed to load configure sheet." );
 			NSBeep();
