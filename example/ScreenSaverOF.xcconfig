@@ -1,0 +1,34 @@
+//THE PATH TO THE ROOT OF OUR OF PATH RELATIVE TO THIS PROJECT.
+//THIS NEEDS TO BE DEFINED BEFORE CoreOF.xcconfig IS INCLUDED
+OF_PATH = ../../OpenFrameworks
+
+CLANG_CXX_LIBRARY = libc++
+CLANG_CXX_LANGUAGE_STANDARD = c++11
+MACOSX_DEPLOYMENT_TARGET = 10.9
+
+#include "../../OpenFrameworks/libs/openFrameworksCompiled/project/osx/CoreOF.xcconfig"
+
+// Bundle ID
+BUNDLE_ID=cc.openframeworks.$(TARGET_NAME)
+
+// Rename the screen saver package
+TARGET_NAME=Anemona2
+TARGET_DISPLAY_NAME=Anemona2
+
+// Add extra src directories here!
+HEADER_SEARCH_PATHS = $(OF_CORE_HEADERS) src src/ofxScreenSaver
+
+// PATH SETUP // DONT MESS WITH THIS UNLESS YOU HAVE A GOOD REASON TO DO SO
+// NOTE - NO FMOD!
+OF_CORE_LIBS = $(LIB_TESS) $(LIB_GLEW) $(LIB_CAIRO1) $(LIB_CAIRO2) $(LIB_CAIRO3) $(LIB_RTAUDIO) $(LIB_GLFW) $(LIB_FREEIMAGE) $(LIB_FREETYPE) $(LIB_BOOST_FS) $(LIB_BOOST_SYSTEM) $(LIB_CURL) $(LIB_URIPARSER) $(LIB_PUGIXML)
+OTHER_LDFLAGS = $(OF_CORE_LIBS) $(OF_CORE_FRAMEWORKS) $(LIB_OF)
+OTHER_CFLAGS=-DUSE_FMOD=false
+OTHER_CPLUSPLUSFLAGS=-DUSE_FMOD=false
+
+// Note! less frameworks than standard OF
+OF_CORE_FRAMEWORKS = -framework ScreenSaver -framework AVFoundation -framework Cocoa -framework CoreFoundation -framework CoreMedia -framework CoreServices -framework IOKit -framework OpenGL -framework Security -framework CoreVideo
+
+// Dont mess with these!
+SCREEN_SAVER_PRINCIPAL_CLASS=ofxScreensaver$(TARGET_NAME)
+GCC_PREPROCESSOR_DEFINITIONS=OF_SCREEN_SAVER BUNDLE_IDENTIFIER=$(BUNDLE_ID) SCREENSAVER_MAIN_CLASS=$(SCREEN_SAVER_PRINCIPAL_CLASS) SCREENSAVER_GLVIEW=$(SCREEN_SAVER_PRINCIPAL_CLASS)_GLView //SCREEN_SAVER_BASE_CLASS=$(SCREEN_SAVER_PRINCIPAL_CLASS)Base
+GENERATE_PKGINFO_FILE = YES
