@@ -18,7 +18,7 @@ class ofApp;
 @interface SCREENSAVER_MAIN_CLASS : ScreenSaverView {
 
 	// add a configure sheet //
-	IBOutlet id configSheet;
+	IBOutlet NSPanel* configSheet;
 
     BOOL preview;
     BOOL bMainFrame; //main monitor
@@ -33,10 +33,18 @@ class ofApp;
 	float lastOfFramerate;
 }
 
+
 - (ScreenSaverDefaults *) getDefaults;
+
+- (void)recursiveGetControlsInView:(NSView *)view to:(NSMutableArray *)array;
+- (std::map<long,id>)scanAllGui;
 
 + (BOOL) getConfigureBoolean : (NSString*)index;
 + (int) getConfigureInteger : (NSString*)index;
+
+- (IBAction)okClick: (id)sender;
+- (IBAction)cancelClick:(id)sender;
+- (IBAction)guiElementAction:(id)sender;
 
 @end
 

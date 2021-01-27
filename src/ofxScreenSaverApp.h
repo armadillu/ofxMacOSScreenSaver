@@ -10,14 +10,26 @@
 #include "ofMain.h"
 #include "ofxScreenSaverWindow.h"
 
+#if defined(__OBJC__)
+#import <Cocoa/Cocoa.h>
+#else
+typedef void* id;
+#endif
+
+
 class ofxScreenSaverApp : public ofBaseApp{
 
 public:
 
 	//if you implement an ofxScreenSaverApp, you must be able to provide valid settings for your window
-	virtual void setupWindowSettings(ofxScreenSaverWindowSettings & set, bool isPreviewWindow, const ofRectangle & r) = 0;
+	void supplyWindowSettings(ofxScreenSaverWindowSettings & set, bool isPreviewWindow);
+
+	//you get notified when the view is up, with some info about it
+	void viewCreated(bool isPreviewWindow, const ofRectangle & r, float uiscale);
 
 	virtual bool hasConfigureSheet(){return false;};
+	virtual void onGuiAction(id sender){};
+	virtual void updateGui(std::map<long,id> &){};
 
 protected:
 

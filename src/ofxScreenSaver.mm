@@ -17,6 +17,7 @@
 #define SCREENSAVER_CLASS_STRING_LIT @ STRINGIZE2(SCREENSAVER_MAIN_CLASS)
 #define SCREENSAVER_GL_VIEW_STRING @ STRINGIZE2(SCREENSAVER_GLVIEW)
 
+#define GUI_ITEM_TAG_IDs	1000
 
 @implementation SCREENSAVER_MAIN_CLASS
 
@@ -24,7 +25,6 @@ static int numInstances = 0;
 static BOOL isOfSetup = FALSE;
 
 static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
-
 
 - (id)initWithFrame:(NSRect)frame isPreview:(BOOL)isPreview {
 
@@ -44,12 +44,53 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	//TODO! read defaults here
 	bUseMultiScreen = true;
 
-	numInstances++;
+	//load the nib so we can supply all elements to our app
+	if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self]){
+		NSLog( @"Failed to load configure sheet." );
+		NSBeep();
+	}else{
+		if (!configSheet){
+			ofLogError("ofxScreenSaver") << "loaded nib but we don't have access to the config sheet!?";
+		}else{
+			ofLogNotice("ofxScreenSaver") << "loaded config sheet!";
+		}
+	}
 
-	ofLogNotice("ofxScreenSaver") << "start anim : creating app & window " << thisInstance;
+	ofLogNotice("ofxScreenSaver") << "allocating app" << thisInstance;
 	app = std::make_shared<ofApp>();
 
+	app->setupParameters();
+
+	auto allGui = [self scanAllGui];
+	app->updateGui(allGui);
+
+
+	numInstances++;
 	return self;
+}
+
+
+- (void)recursiveGetControlsInView:(NSView *)view to:(NSMutableArray *)array{
+	if([view isKindOfClass:[NSControl class]] && [view tag] < GUI_ITEM_TAG_IDs){ //get all controls that are not default GUI
+		[array addObject:view];
+	}
+	for(NSView *thisView in [view subviews]){
+		[self recursiveGetControlsInView:thisView to:array];
+	}
+}
+
+
+- (std::map<long,id>) scanAllGui{
+	std::map<long,id> ret;
+	if(configSheet){
+		NSPanel * p = configSheet;
+		NSMutableArray * array = [NSMutableArray arrayWithCapacity:10];
+		[self recursiveGetControlsInView:[p contentView] to: array];
+		for( id control in array){
+			ret[ [control tag] ] = control;
+		}
+	}
+	return ret;
 }
 
 
@@ -71,17 +112,20 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 		ofxScreenSaverWindowSettings settings;
-		ofRectangle r = ofRectangle(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
-		app->setupWindowSettings(settings, preview, r); //ask our guest app for what window settings it wants
+		app->supplyWindowSettings(settings, preview); //ask our guest app for what window settings it wants
 
 		float deviceFactor = [[self window] backingScaleFactor];
 		float retina = settings.retina? deviceFactor : 1;
 		settings.setSize(bounds.size.width * retina, bounds.size.height * retina);
 
+		ofRectangle r = ofRectangle(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+
 		ofInit();
 		win = std::make_shared<ofxScreenSaverWindow>();
 		ofGetMainLoop()->addWindow(win);
 		win->setup(settings, self);
+
+		app->viewCreated(preview, r, retina);
 
 		string npath = [[[NSBundle bundleForClass:[self class]] resourcePath] UTF8String] + string("/data/");
 		ofSetDataPathRoot( npath );
@@ -154,9 +198,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (NSWindow *)configureSheet {
-
-	ScreenSaverDefaults *defaults;
-	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
+	ScreenSaverDefaults * defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
 	
 	if (!configSheet){
 		NSLog( @"loading configure sheet..." );
@@ -165,7 +207,6 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 			NSBeep();
 		}
 	}
-
 	return configSheet;
 }
 
@@ -173,6 +214,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (IBAction) okClick: (id)sender{
 
+	ofLogNotice("ofxScreenSaver") << "okClick";
 	ScreenSaverDefaults *defaults;
 	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
 	
@@ -187,7 +229,22 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (IBAction)cancelClick:(id)sender {
+	ofLogNotice("ofxScreenSaver") << "cancelClick";
 	[[NSApplication sharedApplication] endSheet:configSheet];
+}
+
+
+- (IBAction)guiElementAction:(id)sender{
+
+	ofLogNotice("ofxScreenSaver") << "guiElementAction()";
+	if(app.get()){
+		int elementTag = (int)[sender tag];
+		if(elementTag < GUI_ITEM_TAG_IDs){ //dont forward addons fixed GUI elements
+			app->onGuiAction(sender);
+		}
+	}else{
+		ofLogError("ofxScreenSaver") << "elementClick no app!";
+	}
 }
 
 
@@ -199,9 +256,9 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 //        delete ssApp;
 //        ssApp = NULL;
 //    }
-
 	//[super dealloc];
 }
+
 
 - (ScreenSaverDefaults *)getDefaults {
 	return [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
@@ -223,5 +280,3 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 }
 
 @end
-
-
