@@ -109,10 +109,13 @@ void ofxScreenSaverWindow::setup(const ofxScreenSaverWindowSettings & settings, 
 	if(settings.retina){
 		float deviceFactor = [[ssView_ window] backingScaleFactor];
 		pixelScreenCoordScale = deviceFactor;
-		[ glView setWantsBestResolutionOpenGLSurface: YES];
+		[glView setWantsBestResolutionOpenGLSurface: YES];
+	}else{
+		pixelScreenCoordScale = 1.0f;
+		[glView setWantsBestResolutionOpenGLSurface: NO];
 	}
 
-	if(settings.glVersionMajor>=3){
+	if(settings.glVersionMajor >= 3){
 		currentRenderer = std::make_shared<ofGLProgrammableRenderer>(this);
 	}else{
 		currentRenderer = std::make_shared<ofGLRenderer>(this);
@@ -129,7 +132,7 @@ void ofxScreenSaverWindow::setup(const ofxScreenSaverWindowSettings & settings, 
 		inited = true;
 	}
 
-	if(settings.glVersionMajor>=3){
+	if(settings.glVersionMajor >= 3){
 		static_cast<ofGLProgrammableRenderer*>(currentRenderer.get())->setup(settings.glVersionMajor,settings.glVersionMinor);
 	}else{
 		static_cast<ofGLRenderer*>(currentRenderer.get())->setup();

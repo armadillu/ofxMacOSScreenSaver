@@ -19,10 +19,14 @@ class ofApp;
 
 	// add a configure sheet //
 	IBOutlet NSPanel* configSheet;
+	IBOutlet NSButton* retinaButton;
+	IBOutlet NSButton* multiMonitorButton;
+
+	BOOL bUseMultiScreen; //from defaults, draw on all screens or only on main?
+	BOOL wantsRetina;
 
     BOOL preview;
     BOOL bMainFrame; //main monitor
-    BOOL bUseMultiScreen; //from defaults, draw on all screens or only on main?
 	BOOL isDisabledMonitor;
 	int thisInstance;
 
@@ -35,6 +39,8 @@ class ofApp;
 
 
 - (ScreenSaverDefaults *) getDefaults;
+- (void) loadSettings;
+- (void) saveSettings;
 
 - (void)recursiveGetControlsInView:(NSView *)view to:(NSMutableArray *)array;
 - (std::map<long,id>)scanAllGui;

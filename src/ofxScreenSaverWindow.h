@@ -29,8 +29,9 @@ class ofxScreenSaverGLView;
 ///////////////////////////////////////////////////////////////////////////////
 
 class ofxScreenSaverWindowSettings: public ofGLWindowSettings{
+friend class ofxScreenSaverWindow;
 public:
-	ofxScreenSaverWindowSettings(){}
+	ofxScreenSaverWindowSettings(bool wantsRetina){ retina = wantsRetina;}
 
 	ofxScreenSaverWindowSettings(const ofGLWindowSettings & settings)
 	:ofGLWindowSettings(settings){}
@@ -39,6 +40,7 @@ public:
 	int depthBits = 24;
 	int stencilBits = 0;
 	int alphaBits = 8;
+private:
 	bool retina = false;
 };
 

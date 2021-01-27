@@ -17,7 +17,6 @@ typedef void* id;
 #endif
 
 #define JSON_VAL_KEY "val"
-
 #define GET_SSAVER_PARAM(a) 						ofxScreenSaverParameters::get().getParam(a)["val"]
 #define GET_SSAVER_PARAM_TYPE(a) 					ofxScreenSaverParameters::get().getParam(a).type()
 #define ADD_SSAVER_PARAM(name, tagID, value) 		ofxScreenSaverParameters::get().addParameter(name, tagID, value)

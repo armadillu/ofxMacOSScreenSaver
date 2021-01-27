@@ -26,13 +26,14 @@ static BOOL isOfSetup = FALSE;
 
 static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
+
 - (id)initWithFrame:(NSRect)frame isPreview:(BOOL)isPreview {
 
 	bMainFrame = NO;
 
 	self = [super initWithFrame:frame isPreview:isPreview];
 	NSLog(@"## init with frame: %.0f %.0f %.0f %.0f ####################################################################", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height );
-	NSLog(@"isPreview: %d", (int)isPreview);
+	//NSLog(@"isPreview: %d", (int)isPreview);
 	NSLog(@"instance # %d", (int)numInstances);
 	thisInstance = numInstances;
 
@@ -41,8 +42,8 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	preview = isPreview;
 	bounds = frame;
 
-	//TODO! read defaults here
-	bUseMultiScreen = true;
+	//read defaults here
+	[self loadSettings];
 
 	//load the nib so we can supply all elements to our app
 	if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self]){
@@ -56,14 +57,11 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 		}
 	}
 
-	ofLogNotice("ofxScreenSaver") << "allocating app" << thisInstance;
 	app = std::make_shared<ofApp>();
-
 	app->setupParameters();
 
 	auto allGui = [self scanAllGui];
 	app->updateGui(allGui);
-
 
 	numInstances++;
 	return self;
@@ -94,6 +92,20 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 }
 
 
+- (void) loadSettings{
+	ofLogNotice("ofxScreenSaver") << "loadSettings";
+	bUseMultiScreen = [[self getDefaults] integerForKey:@"MultiScreen"];
+	wantsRetina = [[self getDefaults] integerForKey:@"wantsRetina"];
+}
+
+
+- (void) saveSettings{
+	ofLogNotice("ofxScreenSaver") << "saveSettings";
+	[[self getDefaults] setInteger: bUseMultiScreen forKey:@"MultiScreen"];
+	[[self getDefaults] setInteger: wantsRetina forKey:@"wantsRetina"];
+}
+
+
 - (void)startAnimation {
 
 	ofLogNotice("ofxScreenSaver") << "___ startAnimation ___" << thisInstance;
@@ -110,12 +122,11 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 	if(!isDisabledMonitor) {
 
-
-		ofxScreenSaverWindowSettings settings;
+		ofxScreenSaverWindowSettings settings = ofxScreenSaverWindowSettings(wantsRetina);
 		app->supplyWindowSettings(settings, preview); //ask our guest app for what window settings it wants
 
 		float deviceFactor = [[self window] backingScaleFactor];
-		float retina = settings.retina? deviceFactor : 1;
+		float retina = wantsRetina ? deviceFactor : 1;
 		settings.setSize(bounds.size.width * retina, bounds.size.height * retina);
 
 		ofRectangle r = ofRectangle(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
@@ -157,10 +168,8 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (void)drawRect:(NSRect)rect {
-	if(isDisabledMonitor){
-		[[NSColor orangeColor] set];
-		NSRectFill(rect);
-	}
+	[[NSColor blackColor] set];
+	NSRectFill(rect);
     [super drawRect:rect];
 }
 
@@ -198,8 +207,8 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (NSWindow *)configureSheet {
-	ScreenSaverDefaults * defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
-	
+
+	ofLogNotice("ofxScreenSaver") << "configureSheet";
 	if (!configSheet){
 		NSLog( @"loading configure sheet..." );
 		if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self]){
@@ -207,23 +216,23 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 			NSBeep();
 		}
 	}
+
+	//update settings b4 we present
+	[retinaButton setIntValue: wantsRetina];
+	[multiMonitorButton setIntValue: bUseMultiScreen];
+
 	return configSheet;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (IBAction) okClick: (id)sender{
-
 	ofLogNotice("ofxScreenSaver") << "okClick";
-	ScreenSaverDefaults *defaults;
-	defaults = [ScreenSaverDefaults defaultsForModuleWithName:MyModuleName];
-	
-	// Update our defaults
-    
-	// Save the settings to disk
-	[defaults synchronize];
-    
-	// Close the sheet
+
+	wantsRetina = [retinaButton intValue];
+	bUseMultiScreen = [multiMonitorButton intValue];
+	[self saveSettings];
+
 	[[NSApplication sharedApplication] endSheet:configSheet];
 }
 
