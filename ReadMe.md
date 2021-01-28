@@ -19,6 +19,9 @@ Also if you run on an old enough version of MacOS you can still run [SaverLab](h
 
 Very much a WIP!
 
+# Distribution 
+
+For the ssaver to run on other computers on recent versions of Mac OS, you will need to codesign and notarize it. This [guide](http://www.cannonade.net/blog.php?id=1872) worked fine for me.
 
 ## Forum discussions
 * http://forum.openframeworks.cc/t/screen-saver/1709

@@ -5,26 +5,49 @@ ofApp::~ofApp(){
 	ofLogNotice("ofApp") << "~ofApp()";
 }
 
+void ofApp::setupParameters(){
 
-void ofApp::setupWindowSettings(ofxScreenSaverWindowSettings & set, bool isPreviewWindow, const ofRectangle & r){
+	// Define the parameters you created GUI for in the NIB file.
+	// You need to provide a name, a default value (which infers type), and the tag TAG #
+	// you did set for that control in interface builder.
+	// In Interface Builder, sliders, checkboxes, and dropdown menus are supported.
+	// See the supplied ConfigureSheet.nib
+	//
+	// Beware! this method will be called b4 setup() is called!
+
+	ofLogNotice("ofApp") << "setupParameters()";
+
+	ADD_SSAVER_PARAM("X", 10, 33.1f); //create a float for our slider gui X
+	ADD_SSAVER_PARAM("Y", 11, 2); //create a int for our slider gui Y
+	ADD_SSAVER_PARAM("TEST TOGGLE", 12, false); //create a bool for TEST TOGGLE checkbox
+	ADD_SSAVER_PARAM("MENU", 13, 0); //create a int for DropDown Menu
+}
+
+
+void ofApp::supplyWindowSettings(ofxScreenSaverWindowSettings & set, bool isPreviewWindow){
+	isPreview = isPreviewWindow; //is this window the little preview on SystemPreferences?
 
 	//choose specs for your GL window
 	set.depthBits = 24;
 	set.stencilBits = 0;
 	set.alphaBits = 8;
 	set.numSamples = 4; //MSAA
-	set.retina = false;
+}
 
+
+void ofApp::viewCreated(bool isPreviewWindow, const ofRectangle & r, float uiScale){
 	isPreview = isPreviewWindow; //is this window the little preview on SystemPreferences?
 	myRect = r; //rect in global OSX desktop space (so you can figure out what monitor you are in multi-monitor scenarios)
+	myUiScale = uiScale; //"retina" factor - the user can change this in the control panel
 }
 
 
 bool ofApp::hasConfigureSheet(){
-	ofLogNotice("ofApp") << "hasConfigureSheet()";
-	return true;
+	return true; //return FALSE if want your screensaver to have no settings window
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 void ofApp::setup(){
 
@@ -32,6 +55,21 @@ void ofApp::setup(){
 	ofSetVerticalSync(true);
 
 	ofLoadImage(tex, "test.png");
+
+	//you can retrieve the SSaver defaults for the paramters you defined before
+
+	//get a parameter value
+	float x = GET_SSAVER_PARAM("X"); //access param by "name"
+	ofLogNotice("ofApp") << "param 'X' is: " << x;
+	x = GET_SSAVER_PARAM(10);  //access param by TAG
+	ofLogNotice("ofApp") << "param tag 10 is: " << x;
+
+	//query parameter type
+	string type = GET_SSAVER_PARAM_TYPE(10);
+	ofLogNotice("ofApp") << "param tag 10 is type: " << type;
+	type = GET_SSAVER_PARAM_TYPE("X");
+	ofLogNotice("ofApp") << "param 'X' is type: " << type;
+
 }
 
 
@@ -53,7 +91,9 @@ void ofApp::draw(){
 								30, 30);
 
 	float r = ofGetHeight()/4;
-	ofDrawCircle((10 * ofGetFrameNum())%(int( 1 + ofGetWidth())), ofGetHeight()/2, r);
+
+	int speed = GET_SSAVER_PARAM("X");
+	ofDrawCircle((speed * ofGetFrameNum())%(int( 1 + ofGetWidth())), ofGetHeight()/2, r);
 }
 
 

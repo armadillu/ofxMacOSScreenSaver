@@ -10,6 +10,7 @@
 #include "ofMain.h"
 #import "ofxScreenSaver.h"
 #include "ofApp.h"
+#include "ofxScreenSaverParameters.h"
 
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)
@@ -30,20 +31,17 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 - (id)initWithFrame:(NSRect)frame isPreview:(BOOL)isPreview {
 
 	bMainFrame = NO;
+	wantsRetina = FALSE;
 
 	self = [super initWithFrame:frame isPreview:isPreview];
 	NSLog(@"## init with frame: %.0f %.0f %.0f %.0f ####################################################################", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height );
-	//NSLog(@"isPreview: %d", (int)isPreview);
 	NSLog(@"instance # %d", (int)numInstances);
 	thisInstance = numInstances;
-
 	isDisabledMonitor = NO;
+	bUseMultiScreen = NO;
 
 	preview = isPreview;
 	bounds = frame;
-
-	//read defaults here
-	[self loadSettings];
 
 	//load the nib so we can supply all elements to our app
 	if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self]){
@@ -58,10 +56,14 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	}
 
 	app = std::make_shared<ofApp>();
-	app->setupParameters();
+	app->setupParameters(); //ask ofApp host to define its parameters for GUI
 
-	auto allGui = [self scanAllGui];
-	app->updateGui(allGui);
+	[self saveSettings];
+	[self loadSettings]; //read defaults here
+	[self moveParamsToGuiValues];
+
+	std::map<long,id> allGui = [self scanAllGui];
+	ofxScreenSaverParameters::get().setParamWidgets(allGui); //bind the params to ghe GUI controls in the NIB we loaded
 
 	numInstances++;
 	return self;
@@ -79,16 +81,91 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (std::map<long,id>) scanAllGui{
+	ofLogNotice("ofxScreenSaver") << "scanAllGui()";
 	std::map<long,id> ret;
 	if(configSheet){
 		NSPanel * p = configSheet;
 		NSMutableArray * array = [NSMutableArray arrayWithCapacity:10];
 		[self recursiveGetControlsInView:[p contentView] to: array];
 		for( id control in array){
-			ret[ [control tag] ] = control;
+			int tag = [control tag];
+			if(tag > 0 && tag < GUI_ITEM_TAG_IDs){
+				ofLogNotice("ofxScreenSaver") << "found GUI item with tag " << tag;
+				ret[ tag ] = control;
+			}
 		}
 	}
 	return ret;
+}
+
+
+- (void) moveParamsToGuiValues{
+
+	ofLogNotice("ofxScreenSaver") << "moveGuiValuesToParams";
+	std::map<string, ofxScreenSaverParameters::Parameter*> all = ofxScreenSaverParameters::get().getAllParams();
+	for(auto it : all){
+
+		ofxScreenSaverParameters::Parameter * p = it.second;
+		const string & name = it.first;
+		ofJson & pj = p->parameter[SSP_JSON_VALUE_KEY];
+
+		switch (pj.type()) {
+			case nlohmann::detail::value_t::number_float:
+				[p->uiWidget setFloatValue:pj]; //update gui
+				break;
+
+			case nlohmann::detail::value_t::number_integer:
+				if([p->uiWidget isKindOfClass:[NSSlider class]]){
+					[p->uiWidget setIntValue:pj]; //update gui
+				}
+				if([p->uiWidget isKindOfClass:[NSPopUpButton class]]){
+					[p->uiWidget selectItemAtIndex:(int)pj]; //update gui
+				}
+				break;
+
+			case nlohmann::detail::value_t::boolean:
+				[p->uiWidget setIntValue:pj]; //update gui
+				break;
+
+			default:
+				ofLogError("ofxScreenSaver") << "Param of unknown type! " << it.first; break;
+		}
+	}
+}
+
+
+- (void) moveGuiValuesToParams{
+
+	ofLogNotice("ofxScreenSaver") << "moveGuiValuesToParams";
+	std::map<string, ofxScreenSaverParameters::Parameter*> all = ofxScreenSaverParameters::get().getAllParams();
+
+	for(auto it : all){
+		ofxScreenSaverParameters::Parameter * p = it.second;
+		const string & name = it.first;
+		ofJson & pj = p->parameter[SSP_JSON_VALUE_KEY];
+
+		switch (pj.type()) {
+			case nlohmann::detail::value_t::number_float:
+				pj = [p->uiWidget floatValue]; //update param from current gui
+				break;
+
+			case nlohmann::detail::value_t::number_integer:
+				if([p->uiWidget isKindOfClass:[NSSlider class]]){
+					pj = [p->uiWidget intValue]; //update param from current gui
+				}
+				if([p->uiWidget isKindOfClass:[NSPopUpButton class]]){
+					pj = [p->uiWidget indexOfSelectedItem]; //update param from current gui
+				}
+				break;
+
+			case nlohmann::detail::value_t::boolean:
+				pj = [p->uiWidget intValue]; //update param from current gui
+				break;
+
+			default:
+				ofLogError("ofxScreenSaver") << "Param of unknown type! " << it.first; break;
+		}
+	}
 }
 
 
@@ -96,6 +173,41 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	ofLogNotice("ofxScreenSaver") << "loadSettings";
 	bUseMultiScreen = [[self getDefaults] integerForKey:@"MultiScreen"];
 	wantsRetina = [[self getDefaults] integerForKey:@"wantsRetina"];
+
+	std::map<string, ofxScreenSaverParameters::Parameter*> all = ofxScreenSaverParameters::get().getAllParams();
+	for(auto it : all){
+
+		ofxScreenSaverParameters::Parameter * p = it.second;
+		const string & name = it.first;
+		ofJson & pj = p->parameter[SSP_JSON_VALUE_KEY];
+
+		switch (pj.type()) {
+			case nlohmann::detail::value_t::number_float:
+				ofLogNotice("ofxScreenSaver") << "loading FLOAT param '" << name << "' with tag " << p->tag << " as value " << pj;
+				if ( [[self getDefaults] objectForKey: [NSString stringWithUTF8String:name.c_str()]] != nil ){
+					pj = (float) [[self getDefaults] floatForKey: [NSString stringWithUTF8String:name.c_str()]];
+				}else{
+
+				}
+				[p->uiWidget setFloatValue:pj]; //update gui
+				break;
+
+			case nlohmann::detail::value_t::number_integer:
+				ofLogNotice("ofxScreenSaver") << "loading INT param '" << name << "' with tag " << p->tag << " as value " << pj;
+				pj = (int) [[self getDefaults] integerForKey: [NSString stringWithUTF8String:name.c_str()]];
+				[p->uiWidget setIntValue:pj]; //update gui
+				break;
+
+			case nlohmann::detail::value_t::boolean:
+				ofLogNotice("ofxScreenSaver") << "loading BOOL param '" << name << "' with tag " << p->tag << " as value " << pj;
+				pj = (bool) [[self getDefaults] boolForKey: [NSString stringWithUTF8String:name.c_str()]];
+				[p->uiWidget setIntValue:pj]; //update gui
+				break;
+
+			default:
+				ofLogError("ofxScreenSaver") << "Param of unknown type! " << it.first; break;
+		}
+	}
 }
 
 
@@ -103,12 +215,49 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	ofLogNotice("ofxScreenSaver") << "saveSettings";
 	[[self getDefaults] setInteger: bUseMultiScreen forKey:@"MultiScreen"];
 	[[self getDefaults] setInteger: wantsRetina forKey:@"wantsRetina"];
+
+	std::map<string, ofxScreenSaverParameters::Parameter*> all = ofxScreenSaverParameters::get().getAllParams();
+
+	for(auto it : all){
+		ofxScreenSaverParameters::Parameter * p = it.second;
+		const string & name = it.first;
+		ofJson & pj = p->parameter[SSP_JSON_VALUE_KEY];
+
+		switch (pj.type()) {
+			case nlohmann::detail::value_t::number_float:
+				ofLogNotice("ofxScreenSaver") << "saving FLOAT param '" << name << "' with tag " << p->tag << " as value " << pj;
+				[[self getDefaults] setFloat: (float)pj forKey:[NSString stringWithUTF8String:name.c_str()]];
+				break;
+
+			case nlohmann::detail::value_t::number_integer:
+				ofLogNotice("ofxScreenSaver") << "saving INT param '" << name << "' with tag " << p->tag << " as value " << pj;
+				[[self getDefaults] setInteger: (int)pj forKey:[NSString stringWithUTF8String:name.c_str()]];
+				break;
+
+			case nlohmann::detail::value_t::boolean:
+				ofLogNotice("ofxScreenSaver") << "saving BOOL param '" << name << "' with tag " << p->tag << " as value " << pj;
+				[[self getDefaults] setBool: (bool)pj forKey:[NSString stringWithUTF8String:name.c_str()]];
+				break;
+
+//			case nlohmann::detail::value_t::string:{
+//				string val = (string)p->parameter["val"];
+//				[[self getDefaults] setObject: [NSString stringWithUTF8String:val.c_str()] forKey:[NSString stringWithUTF8String:name.c_str()]];
+//				}break;
+			default:
+				ofLogError("ofxScreenSaver") << "Param of unknown type! " << it.first; break;
+		}
+	}
+
+	BOOL saveOK = [[self getDefaults] synchronize];
+	if(!saveOK){
+		ofLogError("ofxScreenSaver") << "can't save NSUserDefaults!";
+	}
 }
 
 
-- (void)startAnimation {
+- (void) startAnimation {
 
-	ofLogNotice("ofxScreenSaver") << "___ startAnimation ___" << thisInstance;
+	ofLogNotice("ofxScreenSaver") << "____ startAnimation ____" << thisInstance;
 
 	NSRect frame = [[self window] frame];
 
@@ -202,7 +351,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 		ofLogError("ofxScreensaver") << "too early for hasConfigureSheet! " << thisInstance ;
 		return NO;
 	}
-	return app->hasConfigureSheet() ? YES : NO;
+	return YES;
 }
 
 
@@ -220,6 +369,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	//update settings b4 we present
 	[retinaButton setIntValue: wantsRetina];
 	[multiMonitorButton setIntValue: bUseMultiScreen];
+	[self moveParamsToGuiValues];
 
 	return configSheet;
 }
@@ -231,6 +381,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 	wantsRetina = [retinaButton intValue];
 	bUseMultiScreen = [multiMonitorButton intValue];
+	[self moveGuiValuesToParams];
 	[self saveSettings];
 
 	[[NSApplication sharedApplication] endSheet:configSheet];
@@ -239,22 +390,11 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (IBAction)cancelClick:(id)sender {
 	ofLogNotice("ofxScreenSaver") << "cancelClick";
+	[self loadSettings]; //undo all changes!
 	[[NSApplication sharedApplication] endSheet:configSheet];
 }
 
 
-- (IBAction)guiElementAction:(id)sender{
-
-	ofLogNotice("ofxScreenSaver") << "guiElementAction()";
-	if(app.get()){
-		int elementTag = (int)[sender tag];
-		if(elementTag < GUI_ITEM_TAG_IDs){ //dont forward addons fixed GUI elements
-			app->onGuiAction(sender);
-		}
-	}else{
-		ofLogError("ofxScreenSaver") << "elementClick no app!";
-	}
-}
 
 
 - (void)dealloc {

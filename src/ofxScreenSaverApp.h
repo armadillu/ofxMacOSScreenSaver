@@ -27,9 +27,7 @@ public:
 	//you get notified when the view is up, with some info about it
 	void viewCreated(bool isPreviewWindow, const ofRectangle & r, float uiscale);
 
-	virtual bool hasConfigureSheet(){return false;};
-	virtual void onGuiAction(id sender){};
-	virtual void updateGui(std::map<long,id> &){};
+	virtual bool hasConfigureSheet(){return true;};
 
 protected:
 

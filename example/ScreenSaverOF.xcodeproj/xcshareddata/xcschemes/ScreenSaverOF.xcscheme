@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BB4122A225BF7C77005CC27B"
-               BuildableName = "Anemona2.saver"
+               BuildableName = "ScreenSaverOF.saver"
                BlueprintName = "ScreenSaverOF"
                ReferencedContainer = "container:ScreenSaverOF.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BB4122A225BF7C77005CC27B"
-            BuildableName = "Anemona2.saver"
+            BuildableName = "ScreenSaverOF.saver"
             BlueprintName = "ScreenSaverOF"
             ReferencedContainer = "container:ScreenSaverOF.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BB4122A225BF7C77005CC27B"
-            BuildableName = "Anemona2.saver"
+            BuildableName = "ScreenSaverOF.saver"
             BlueprintName = "ScreenSaverOF"
             ReferencedContainer = "container:ScreenSaverOF.xcodeproj">
          </BuildableReference>

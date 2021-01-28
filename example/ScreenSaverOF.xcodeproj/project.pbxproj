@@ -10,28 +10,38 @@
 		BB4122C825BF7F63005CC27B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB4122C725BF7F63005CC27B /* Info.plist */; };
 		BB4122D525BF7F6C005CC27B /* ofApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB4122CA25BF7F6C005CC27B /* ofApp.cpp */; };
 		BB4122D625BF7F6C005CC27B /* ofApp.h in Headers */ = {isa = PBXBuildFile; fileRef = BB4122CB25BF7F6C005CC27B /* ofApp.h */; };
-		BBBA2D7E25BFB428007A29CC /* ofxScreenSaver.h in Headers */ = {isa = PBXBuildFile; fileRef = BBBA2D7525BFB428007A29CC /* ofxScreenSaver.h */; };
-		BBBA2D7F25BFB428007A29CC /* ofxScreenSaver.mm in Sources */ = {isa = PBXBuildFile; fileRef = BBBA2D7625BFB428007A29CC /* ofxScreenSaver.mm */; };
-		BBBA2D8025BFB428007A29CC /* ofxScreenSaverApp.h in Headers */ = {isa = PBXBuildFile; fileRef = BBBA2D7725BFB428007A29CC /* ofxScreenSaverApp.h */; };
-		BBBA2D8125BFB428007A29CC /* ofxScreenSaverGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = BBBA2D7825BFB428007A29CC /* ofxScreenSaverGLView.h */; };
-		BBBA2D8225BFB428007A29CC /* ofxScreenSaverGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = BBBA2D7925BFB428007A29CC /* ofxScreenSaverGLView.mm */; };
-		BBBA2D8325BFB428007A29CC /* ofxScreenSaverWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = BBBA2D7A25BFB428007A29CC /* ofxScreenSaverWindow.h */; };
-		BBBA2D8425BFB428007A29CC /* ofxScreenSaverWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = BBBA2D7B25BFB428007A29CC /* ofxScreenSaverWindow.mm */; };
+		BB979BBE25C26FFE0031FD7D /* ofxScreenSaver.h in Headers */ = {isa = PBXBuildFile; fileRef = BB979BB525C26FFD0031FD7D /* ofxScreenSaver.h */; };
+		BB979BBF25C26FFE0031FD7D /* ofxScreenSaver.mm in Sources */ = {isa = PBXBuildFile; fileRef = BB979BB625C26FFD0031FD7D /* ofxScreenSaver.mm */; };
+		BB979BC025C26FFE0031FD7D /* ofxScreenSaverApp.h in Headers */ = {isa = PBXBuildFile; fileRef = BB979BB725C26FFD0031FD7D /* ofxScreenSaverApp.h */; };
+		BB979BC125C26FFE0031FD7D /* ofxScreenSaverGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = BB979BB825C26FFD0031FD7D /* ofxScreenSaverGLView.h */; };
+		BB979BC225C26FFE0031FD7D /* ofxScreenSaverGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = BB979BB925C26FFD0031FD7D /* ofxScreenSaverGLView.mm */; };
+		BB979BC325C26FFE0031FD7D /* ofxScreenSaverParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = BB979BBA25C26FFD0031FD7D /* ofxScreenSaverParameters.h */; };
+		BB979BC425C26FFE0031FD7D /* ofxScreenSaverParameters.mm in Sources */ = {isa = PBXBuildFile; fileRef = BB979BBB25C26FFD0031FD7D /* ofxScreenSaverParameters.mm */; };
+		BB979BC525C26FFE0031FD7D /* ofxScreenSaverWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = BB979BBC25C26FFD0031FD7D /* ofxScreenSaverWindow.h */; };
+		BB979BC625C26FFE0031FD7D /* ofxScreenSaverWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = BB979BBD25C26FFD0031FD7D /* ofxScreenSaverWindow.mm */; };
+		BB979C0225C270050031FD7D /* ofApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BB979BEA25C270050031FD7D /* ofApp.cpp */; };
+		BB979C0325C270050031FD7D /* ofApp.h in Headers */ = {isa = PBXBuildFile; fileRef = BB979BEB25C270050031FD7D /* ofApp.h */; };
+		BBBA2D8625BFBEAB007A29CC /* ConfigureSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = BBBA2D8525BFBEAB007A29CC /* ConfigureSheet.nib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BB4122A325BF7C77005CC27B /* Anemona2.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Anemona2.saver; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB4122A325BF7C77005CC27B /* ScreenSaverOF.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScreenSaverOF.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4122C725BF7F63005CC27B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB4122CA25BF7F6C005CC27B /* ofApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofApp.cpp; sourceTree = "<group>"; };
 		BB4122CB25BF7F6C005CC27B /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofApp.h; sourceTree = "<group>"; };
 		BB4122DF25BF7F7E005CC27B /* ScreenSaverOF.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = ScreenSaverOF.xcconfig; sourceTree = "<group>"; };
-		BBBA2D7525BFB428007A29CC /* ofxScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaver.h; sourceTree = "<group>"; };
-		BBBA2D7625BFB428007A29CC /* ofxScreenSaver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxScreenSaver.mm; sourceTree = "<group>"; };
-		BBBA2D7725BFB428007A29CC /* ofxScreenSaverApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaverApp.h; sourceTree = "<group>"; };
-		BBBA2D7825BFB428007A29CC /* ofxScreenSaverGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaverGLView.h; sourceTree = "<group>"; };
-		BBBA2D7925BFB428007A29CC /* ofxScreenSaverGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxScreenSaverGLView.mm; sourceTree = "<group>"; };
-		BBBA2D7A25BFB428007A29CC /* ofxScreenSaverWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaverWindow.h; sourceTree = "<group>"; };
-		BBBA2D7B25BFB428007A29CC /* ofxScreenSaverWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxScreenSaverWindow.mm; sourceTree = "<group>"; };
+		BB979BB525C26FFD0031FD7D /* ofxScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaver.h; sourceTree = "<group>"; };
+		BB979BB625C26FFD0031FD7D /* ofxScreenSaver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxScreenSaver.mm; sourceTree = "<group>"; };
+		BB979BB725C26FFD0031FD7D /* ofxScreenSaverApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaverApp.h; sourceTree = "<group>"; };
+		BB979BB825C26FFD0031FD7D /* ofxScreenSaverGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaverGLView.h; sourceTree = "<group>"; };
+		BB979BB925C26FFD0031FD7D /* ofxScreenSaverGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxScreenSaverGLView.mm; sourceTree = "<group>"; };
+		BB979BBA25C26FFD0031FD7D /* ofxScreenSaverParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaverParameters.h; sourceTree = "<group>"; };
+		BB979BBB25C26FFD0031FD7D /* ofxScreenSaverParameters.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxScreenSaverParameters.mm; sourceTree = "<group>"; };
+		BB979BBC25C26FFD0031FD7D /* ofxScreenSaverWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxScreenSaverWindow.h; sourceTree = "<group>"; };
+		BB979BBD25C26FFD0031FD7D /* ofxScreenSaverWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxScreenSaverWindow.mm; sourceTree = "<group>"; };
+		BB979BEA25C270050031FD7D /* ofApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofApp.cpp; sourceTree = "<group>"; };
+		BB979BEB25C270050031FD7D /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofApp.h; sourceTree = "<group>"; };
+		BBBA2D8525BFBEAB007A29CC /* ConfigureSheet.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = ConfigureSheet.nib; path = data/ConfigureSheet.nib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,9 +58,10 @@
 		BB41229925BF7C77005CC27B = {
 			isa = PBXGroup;
 			children = (
-				BBBA2D6F25BFB411007A29CC /* externalAddons */,
+				BB979BB325C26FEF0031FD7D /* ofxMacOSScreenSaver */,
 				BB4122C725BF7F63005CC27B /* Info.plist */,
 				BB4122DF25BF7F7E005CC27B /* ScreenSaverOF.xcconfig */,
+				BBBA2D8525BFBEAB007A29CC /* ConfigureSheet.nib */,
 				BB4122C925BF7F6C005CC27B /* src */,
 				BB4122A425BF7C77005CC27B /* Products */,
 			);
@@ -59,7 +70,7 @@
 		BB4122A425BF7C77005CC27B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BB4122A325BF7C77005CC27B /* Anemona2.saver */,
+				BB4122A325BF7C77005CC27B /* ScreenSaverOF.saver */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -73,33 +84,45 @@
 			path = src;
 			sourceTree = "<group>";
 		};
-		BBBA2D6F25BFB411007A29CC /* externalAddons */ = {
+		BB979BB325C26FEF0031FD7D /* ofxMacOSScreenSaver */ = {
 			isa = PBXGroup;
 			children = (
-				BBBA2D7025BFB428007A29CC /* ofxMacOSScreenSaver */,
-			);
-			path = externalAddons;
-			sourceTree = "<group>";
-		};
-		BBBA2D7025BFB428007A29CC /* ofxMacOSScreenSaver */ = {
-			isa = PBXGroup;
-			children = (
-				BBBA2D7425BFB428007A29CC /* src */,
+				BB979BC725C270050031FD7D /* example */,
+				BB979BB425C26FFD0031FD7D /* src */,
 			);
 			name = ofxMacOSScreenSaver;
-			path = ../../../ExternalAddons/ofxMacOSScreenSaver;
 			sourceTree = "<group>";
 		};
-		BBBA2D7425BFB428007A29CC /* src */ = {
+		BB979BB425C26FFD0031FD7D /* src */ = {
 			isa = PBXGroup;
 			children = (
-				BBBA2D7525BFB428007A29CC /* ofxScreenSaver.h */,
-				BBBA2D7625BFB428007A29CC /* ofxScreenSaver.mm */,
-				BBBA2D7725BFB428007A29CC /* ofxScreenSaverApp.h */,
-				BBBA2D7825BFB428007A29CC /* ofxScreenSaverGLView.h */,
-				BBBA2D7925BFB428007A29CC /* ofxScreenSaverGLView.mm */,
-				BBBA2D7A25BFB428007A29CC /* ofxScreenSaverWindow.h */,
-				BBBA2D7B25BFB428007A29CC /* ofxScreenSaverWindow.mm */,
+				BB979BB525C26FFD0031FD7D /* ofxScreenSaver.h */,
+				BB979BB625C26FFD0031FD7D /* ofxScreenSaver.mm */,
+				BB979BB725C26FFD0031FD7D /* ofxScreenSaverApp.h */,
+				BB979BB825C26FFD0031FD7D /* ofxScreenSaverGLView.h */,
+				BB979BB925C26FFD0031FD7D /* ofxScreenSaverGLView.mm */,
+				BB979BBA25C26FFD0031FD7D /* ofxScreenSaverParameters.h */,
+				BB979BBB25C26FFD0031FD7D /* ofxScreenSaverParameters.mm */,
+				BB979BBC25C26FFD0031FD7D /* ofxScreenSaverWindow.h */,
+				BB979BBD25C26FFD0031FD7D /* ofxScreenSaverWindow.mm */,
+			);
+			name = src;
+			path = ../src;
+			sourceTree = "<group>";
+		};
+		BB979BC725C270050031FD7D /* example */ = {
+			isa = PBXGroup;
+			children = (
+				BB979BE925C270050031FD7D /* src */,
+			);
+			name = example;
+			sourceTree = "<group>";
+		};
+		BB979BE925C270050031FD7D /* src */ = {
+			isa = PBXGroup;
+			children = (
+				BB979BEA25C270050031FD7D /* ofApp.cpp */,
+				BB979BEB25C270050031FD7D /* ofApp.h */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -111,11 +134,13 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBBA2D8325BFB428007A29CC /* ofxScreenSaverWindow.h in Headers */,
-				BBBA2D8025BFB428007A29CC /* ofxScreenSaverApp.h in Headers */,
-				BBBA2D7E25BFB428007A29CC /* ofxScreenSaver.h in Headers */,
+				BB979BC525C26FFE0031FD7D /* ofxScreenSaverWindow.h in Headers */,
+				BB979BC125C26FFE0031FD7D /* ofxScreenSaverGLView.h in Headers */,
+				BB979BBE25C26FFE0031FD7D /* ofxScreenSaver.h in Headers */,
+				BB979BC025C26FFE0031FD7D /* ofxScreenSaverApp.h in Headers */,
+				BB979C0325C270050031FD7D /* ofApp.h in Headers */,
 				BB4122D625BF7F6C005CC27B /* ofApp.h in Headers */,
-				BBBA2D8125BFB428007A29CC /* ofxScreenSaverGLView.h in Headers */,
+				BB979BC325C26FFE0031FD7D /* ofxScreenSaverParameters.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +157,7 @@
 				BB4122A025BF7C77005CC27B /* Frameworks */,
 				BB4122A125BF7C77005CC27B /* Resources */,
 				BB4122E225BF8088005CC27B /* Copy OF Data to Resources */,
+				BB9CD91825C0D88F00F52D36 /* Install */,
 			);
 			buildRules = (
 			);
@@ -139,7 +165,7 @@
 			);
 			name = ScreenSaverOF;
 			productName = ScreenSaverOF;
-			productReference = BB4122A325BF7C77005CC27B /* Anemona2.saver */;
+			productReference = BB4122A325BF7C77005CC27B /* ScreenSaverOF.saver */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -178,6 +204,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBBA2D8625BFBEAB007A29CC /* ConfigureSheet.nib in Resources */,
 				BB4122C825BF7F63005CC27B /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,7 +228,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# Note that this builds a Release version of OF with NO FMOD to avoid dylibs.\n# Note that this means your ScreenSaver can't play sounds through ofSound\nxcodebuild -project \"/Users/oriol/Desktop/OF_uricat/OpenFrameworks/libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj\" -target openFrameworks -configuration \"Release\" OTHER_CFLAGS=\"-DUSE_FMOD=false\" OTHER_CPLUSPLUSFLAGS=\"-DUSE_FMOD=false\" \n\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# Note that this builds a Release version of OF with NO FMOD to avoid dylibs.\n# Note that this means your ScreenSaver can't play sounds through ofSound\nxcodebuild -project \"${OF_PATH}/libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj\" -target openFrameworks -configuration \"Release\" OTHER_CFLAGS=\"-DUSE_FMOD=false\" OTHER_CPLUSPLUSFLAGS=\"-DUSE_FMOD=false\" \n\n";
 			showEnvVarsInLog = 0;
 		};
 		BB4122E225BF8088005CC27B /* Copy OF Data to Resources */ = {
@@ -223,6 +250,24 @@
 			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$PRODUCT_NAME.saver/Contents/Resources/\"\n\n# Copy default icon file into App/Resources\n#rsync -aved \"$ICON_FILE\" \"$TARGET_BUILD_DIR/$PRODUCT_NAME.saver/Contents/Resources/\"\n\n# Copy bin/data into App/Resources\nrsync -avz --exclude='.DS_Store' \"${SRCROOT}/data/\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/data/\"\n\n";
 			showEnvVarsInLog = 0;
 		};
+		BB9CD91825C0D88F00F52D36 /* Install */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Install;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rm -rf /Users/oriol/Library/Screen\\ Savers/Anemona2.saver\n\ncp -r /Users/oriol/Desktop/OF_uricat/Projects/ScreenSaverOF/Build/Products/Release/Anemona2.saver   /Users/oriol/Library/Screen\\ Savers\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -230,10 +275,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBBA2D7F25BFB428007A29CC /* ofxScreenSaver.mm in Sources */,
-				BBBA2D8425BFB428007A29CC /* ofxScreenSaverWindow.mm in Sources */,
 				BB4122D525BF7F6C005CC27B /* ofApp.cpp in Sources */,
-				BBBA2D8225BFB428007A29CC /* ofxScreenSaverGLView.mm in Sources */,
+				BB979BC425C26FFE0031FD7D /* ofxScreenSaverParameters.mm in Sources */,
+				BB979BC625C26FFE0031FD7D /* ofxScreenSaverWindow.mm in Sources */,
+				BB979BBF25C26FFE0031FD7D /* ofxScreenSaver.mm in Sources */,
+				BB979C0225C270050031FD7D /* ofApp.cpp in Sources */,
+				BB979BC225C26FFE0031FD7D /* ofxScreenSaverGLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,7 +289,6 @@
 /* Begin XCBuildConfiguration section */
 		BB4122AB25BF7C77005CC27B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB4122DF25BF7F7E005CC27B /* ScreenSaverOF.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -304,7 +350,6 @@
 		};
 		BB4122AC25BF7C77005CC27B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB4122DF25BF7F7E005CC27B /* ScreenSaverOF.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -359,7 +404,6 @@
 		};
 		BB4122AE25BF7C77005CC27B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB4122DF25BF7F7E005CC27B /* ScreenSaverOF.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -371,7 +415,6 @@
 		};
 		BB4122AF25BF7C77005CC27B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB4122DF25BF7F7E005CC27B /* ScreenSaverOF.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;

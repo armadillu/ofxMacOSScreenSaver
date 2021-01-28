@@ -23,7 +23,7 @@ class ofApp;
 	IBOutlet NSButton* multiMonitorButton;
 
 	BOOL bUseMultiScreen; //from defaults, draw on all screens or only on main?
-	BOOL wantsRetina;
+	BOOL wantsRetina; //from defaults, user can change this- does the ss use retina if available?
 
     BOOL preview;
     BOOL bMainFrame; //main monitor
@@ -41,6 +41,8 @@ class ofApp;
 - (ScreenSaverDefaults *) getDefaults;
 - (void) loadSettings;
 - (void) saveSettings;
+- (void) moveGuiValuesToParams;
+- (void) moveParamsToGuiValues;
 
 - (void)recursiveGetControlsInView:(NSView *)view to:(NSMutableArray *)array;
 - (std::map<long,id>)scanAllGui;
@@ -50,7 +52,6 @@ class ofApp;
 
 - (IBAction)okClick: (id)sender;
 - (IBAction)cancelClick:(id)sender;
-- (IBAction)guiElementAction:(id)sender;
 
 @end
 
