@@ -23,7 +23,6 @@
 @implementation SCREENSAVER_MAIN_CLASS
 
 static int numInstances = 0;
-static BOOL isOfSetup = FALSE;
 
 static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
@@ -34,7 +33,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	wantsRetina = FALSE;
 
 	self = [super initWithFrame:frame isPreview:isPreview];
-	NSLog(@"## init with frame: %.0f %.0f %.0f %.0f ####################################################################", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height );
+	NSLog(@"## %@ init with frame: %.0f %.0f %.0f %.0f ####################################################################", MyModuleName, frame.origin.x, frame.origin.y, frame.size.width, frame.size.height );
 	NSLog(@"instance # %d", (int)numInstances);
 	thisInstance = numInstances;
 	isDisabledMonitor = NO;
@@ -54,18 +53,8 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 			ofLogNotice("ofxScreenSaver") << "loaded config sheet!";
 		}
 	}
-
-	app = std::make_shared<ofApp>();
-	app->setupParameters(); //ask ofApp host to define its parameters for GUI
-
-	[self saveSettings];
-	[self loadSettings]; //read defaults here
-	[self moveParamsToGuiValues];
-
-	std::map<long,id> allGui = [self scanAllGui];
-	ofxScreenSaverParameters::get().setParamWidgets(allGui); //bind the params to ghe GUI controls in the NIB we loaded
-
 	numInstances++;
+
 	return self;
 }
 
@@ -171,8 +160,12 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (void) loadSettings{
 	ofLogNotice("ofxScreenSaver") << "loadSettings";
-	bUseMultiScreen = [[self getDefaults] integerForKey:@"MultiScreen"];
-	wantsRetina = [[self getDefaults] integerForKey:@"wantsRetina"];
+	if([[self getDefaults] objectForKey:@"MultiScreen"]){
+		bUseMultiScreen = [[self getDefaults] integerForKey:@"MultiScreen"];
+	}
+	if([[self getDefaults] objectForKey:@"wantsRetina"]){
+		wantsRetina = [[self getDefaults] integerForKey:@"wantsRetina"];
+	}
 
 	std::map<string, ofxScreenSaverParameters::Parameter*> all = ofxScreenSaverParameters::get().getAllParams();
 	for(auto it : all){
@@ -257,49 +250,70 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (void) startAnimation {
 
-	ofLogNotice("ofxScreenSaver") << "____ startAnimation ____" << thisInstance;
+	ofLogNotice("ofxScreenSaver") << "____ startAnimation ____ " << thisInstance;
 
-	NSRect frame = [[self window] frame];
+	app = std::make_shared<ofApp>();
+	app->setupParameters(); //ask ofApp host to define its parameters for GUI
 
-	if ( ((int)frame.origin.x == 0 && (int)frame.origin.y == 0 ) || preview ) {
-		ofLogNotice("ofxScreenSaver") << "this is the main screen #" << thisInstance;
-		bMainFrame = YES;
-	}
+	[self loadSettings]; //read defaults here
+	[self moveParamsToGuiValues];
 
-	bool needsDrawGL = preview || bMainFrame || bUseMultiScreen;
-	isDisabledMonitor = !needsDrawGL;
+	std::map<long,id> allGui = [self scanAllGui];
+	ofxScreenSaverParameters::get().setParamWidgets(allGui); //bind the params to ghe GUI controls in the NIB we loaded
 
-	if(!isDisabledMonitor) {
 
-		ofxScreenSaverWindowSettings settings = ofxScreenSaverWindowSettings(wantsRetina);
-		app->supplyWindowSettings(settings, preview); //ask our guest app for what window settings it wants
+	static std::map<id, bool> isSetup; //make sure we dont setup twice (for each instance)
 
-		float deviceFactor = [[self window] backingScaleFactor];
-		float retina = wantsRetina ? deviceFactor : 1;
-		settings.setSize(bounds.size.width * retina, bounds.size.height * retina);
+	auto it = isSetup.find(self);
+	if(true || it == isSetup.end()){
 
-		ofRectangle r = ofRectangle(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+		isSetup[self] = true;
 
-		ofInit();
-		win = std::make_shared<ofxScreenSaverWindow>();
-		ofGetMainLoop()->addWindow(win);
-		win->setup(settings, self);
+		//NSRect frame = [[self window] frame];
+		NSRect frame = bounds;
 
-		app->viewCreated(preview, r, retina);
+		if ( ((int)frame.origin.x == 0 && (int)frame.origin.y == 0 ) || preview ) {
+			ofLogNotice("ofxScreenSaver") << "this is the main screen #" << thisInstance;
+			bMainFrame = YES;
+		}
 
-		string npath = [[[NSBundle bundleForClass:[self class]] resourcePath] UTF8String] + string("/data/");
-		ofSetDataPathRoot( npath );
+		bool needsDrawGL = preview || bMainFrame || bUseMultiScreen;
+		isDisabledMonitor = !needsDrawGL;
 
-		ofGetMainLoop()->run(win, app);
+		if(!isDisabledMonitor) {
 
-		lastOfFramerate = ofGetTargetFrameRate();
-		if(lastOfFramerate > 0.0){
-			[self setAnimationTimeInterval:1/lastOfFramerate];
+			ofxScreenSaverWindowSettings settings = ofxScreenSaverWindowSettings(wantsRetina);
+			app->supplyWindowSettings(settings, preview); //ask our guest app for what window settings it wants
+
+			float deviceFactor = [[self window] backingScaleFactor];
+			float retina = wantsRetina ? deviceFactor : 1;
+			settings.setSize(bounds.size.width * retina, bounds.size.height * retina);
+
+			ofRectangle r = ofRectangle(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+
+			ofInit();
+			win = std::make_shared<ofxScreenSaverWindow>();
+			ofGetMainLoop()->addWindow(win);
+			win->setup(settings, self);
+
+			app->viewCreated(preview, r, retina);
+
+			string npath = [[[NSBundle bundleForClass:[self class]] resourcePath] UTF8String] + string("/data/");
+			ofSetDataPathRoot( npath );
+
+			ofGetMainLoop()->run(win, app);
+
+			lastOfFramerate = ofGetTargetFrameRate();
+			if(lastOfFramerate > 0.0){
+				[self setAnimationTimeInterval:1/lastOfFramerate];
+			}else{
+				[self setAnimationTimeInterval:1/60.0];
+			}
 		}else{
-			[self setAnimationTimeInterval:1/60.0];
+			ofLogNotice("ofxScreenSaver") << "start anim : disabled Monitor " << thisInstance;
 		}
 	}else{
-		ofLogNotice("ofxScreenSaver") << "start anim : disabled Monitor " << thisInstance;
+		ofLogWarning("ofxScreenSaver") << "skipping setup of " << self << " as we already are setup! " << thisInstance;
 	}
 
 	[super startAnimation];
@@ -307,11 +321,14 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (void)stopAnimation {
-	ofLogNotice("ofxScreenSaver") << "startAnimation " << thisInstance;
-//	if(app != nullptr) {
-//		app = nullptr;
-//	}
-
+	ofLogNotice("ofxScreenSaver") << "____ stopAnimation ____ " << thisInstance;
+	//ofGetMainLoop()->shouldClose(0);
+	//ofGetMainLoop()->exit();
+	//win->close();
+	ofLogNotice("ofxScreenSaver") << " win use_count: " << win.use_count() << " app use_count: " << app.use_count();
+	win = nullptr;
+	app = nullptr;
+	ofLogNotice("ofxScreenSaver") << " win use_count: " << win.use_count() << " app use_count: " << app.use_count();
 	[super stopAnimation];
 }
 
@@ -347,10 +364,10 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (BOOL)hasConfigureSheet{
-	if(!app.get()){
-		ofLogError("ofxScreensaver") << "too early for hasConfigureSheet! " << thisInstance ;
-		return NO;
-	}
+//	if(!app.get()){
+//		ofLogError("ofxScreensaver") << "too early for hasConfigureSheet! " << thisInstance ;
+//		return YES;
+//	}
 	return YES;
 }
 
@@ -398,7 +415,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (void)dealloc {
-	NSLog(@"ofxScreenSaver :: dealloc : bMainFrame = %i preview = %i thisInstance: %d xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", bMainFrame, preview, thisInstance);
+	NSLog(@"DEALLOC : bMainFrame = %i preview = %i thisInstance: %d xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", bMainFrame, preview, thisInstance);
 //    if(ssApp != NULL) {
 //        NSLog(@"ofxScreenSaver :: calling exit_cb xxxxxxxxx");
 //        ssApp->exit_cb();

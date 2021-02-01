@@ -32,6 +32,7 @@ class ofApp;
 
 	std::shared_ptr<ofxScreenSaverWindow> win;
 	std::shared_ptr<ofApp> app;
+	
 
     NSRect bounds;
 	float lastOfFramerate;
