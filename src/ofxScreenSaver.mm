@@ -54,7 +54,6 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 		}
 	}
 	numInstances++;
-
 	return self;
 }
 
@@ -79,7 +78,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 		for( id control in array){
 			int tag = [control tag];
 			if(tag > 0 && tag < GUI_ITEM_TAG_IDs){
-				ofLogNotice("ofxScreenSaver") << "found GUI item with tag " << tag;
+				ofLogNotice("ofxScreenSaver") << "found GUI item with tag " << tag << " class " << [NSStringFromClass([control class]) cStringUsingEncoding:NSUTF8StringEncoding];
 				ret[ tag ] = control;
 			}
 		}
@@ -90,7 +89,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (void) moveParamsToGuiValues{
 
-	ofLogNotice("ofxScreenSaver") << "moveGuiValuesToParams";
+	ofLogNotice("ofxScreenSaver") << "moveGuiValuesToParams()";
 	std::map<string, ofxScreenSaverParameters::Parameter*> all = ofxScreenSaverParameters::get().getAllParams();
 	for(auto it : all){
 
@@ -125,7 +124,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (void) moveGuiValuesToParams{
 
-	ofLogNotice("ofxScreenSaver") << "moveGuiValuesToParams";
+	ofLogNotice("ofxScreenSaver") << "moveGuiValuesToParams()";
 	std::map<string, ofxScreenSaverParameters::Parameter*> all = ofxScreenSaverParameters::get().getAllParams();
 
 	for(auto it : all){
@@ -159,7 +158,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (void) loadSettings{
-	ofLogNotice("ofxScreenSaver") << "loadSettings";
+	ofLogNotice("ofxScreenSaver") << "loadSettings()";
 	if([[self getDefaults] objectForKey:@"MultiScreen"]){
 		bUseMultiScreen = [[self getDefaults] integerForKey:@"MultiScreen"];
 	}
@@ -205,7 +204,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (void) saveSettings{
-	ofLogNotice("ofxScreenSaver") << "saveSettings";
+	ofLogNotice("ofxScreenSaver") << "saveSettings()";
 	[[self getDefaults] setInteger: bUseMultiScreen forKey:@"MultiScreen"];
 	[[self getDefaults] setInteger: wantsRetina forKey:@"wantsRetina"];
 
@@ -253,14 +252,17 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 	ofLogNotice("ofxScreenSaver") << "____ startAnimation ____ " << thisInstance;
 
 	app = std::make_shared<ofApp>();
-	app->setupParameters(); //ask ofApp host to define its parameters for GUI
+	static bool paramsAreSetup = false;
+	if(!paramsAreSetup){ //make sure we only create SSaver params once
+		app->setupParameters(); //ask ofApp host to define its parameters for GUI
+		paramsAreSetup = true;
+	}
 
 	[self loadSettings]; //read defaults here
 	[self moveParamsToGuiValues];
 
 	std::map<long,id> allGui = [self scanAllGui];
 	ofxScreenSaverParameters::get().setParamWidgets(allGui); //bind the params to ghe GUI controls in the NIB we loaded
-
 
 	static std::map<id, bool> isSetup; //make sure we dont setup twice (for each instance)
 
@@ -341,7 +343,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 
 - (void)setFrameSize:(NSSize)newSize{
-	ofLogNotice("ofxScreenSaver") << "setFrameSize";
+	ofLogNotice("ofxScreenSaver") << "setFrameSize()";
 	[super setFrameSize:newSize];
 }
 
@@ -374,7 +376,7 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 
 - (NSWindow *)configureSheet {
 
-	ofLogNotice("ofxScreenSaver") << "configureSheet";
+	ofLogNotice("ofxScreenSaver") << "configureSheet()";
 	if (!configSheet){
 		NSLog( @"loading configure sheet..." );
 		if (![NSBundle loadNibNamed:@"ConfigureSheet" owner:self]){
@@ -394,19 +396,20 @@ static NSString* const MyModuleName = BUNDLE_ID_STRING_LIT;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (IBAction) okClick: (id)sender{
-	ofLogNotice("ofxScreenSaver") << "okClick";
+	ofLogNotice("ofxScreenSaver") << "okClick()";
 
 	wantsRetina = [retinaButton intValue];
 	bUseMultiScreen = [multiMonitorButton intValue];
 	[self moveGuiValuesToParams];
 	[self saveSettings];
-
 	[[NSApplication sharedApplication] endSheet:configSheet];
+	app->reloadSSaverSettings();
+
 }
 
 
 - (IBAction)cancelClick:(id)sender {
-	ofLogNotice("ofxScreenSaver") << "cancelClick";
+	ofLogNotice("ofxScreenSaver") << "cancelClick()";
 	[self loadSettings]; //undo all changes!
 	[[NSApplication sharedApplication] endSheet:configSheet];
 }

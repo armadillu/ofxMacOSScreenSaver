@@ -18,6 +18,7 @@ typedef void* id;
 
 #define SSP_JSON_VALUE_KEY "val"
 #define GET_SSAVER_PARAM(a) 						ofxScreenSaverParameters::get().getParam(a)["val"]
+#define DOES_SSAVER_PARAM_EXIST(a) 				ofxScreenSaverParameters::get().paramExists(a)
 #define GET_SSAVER_PARAM_TYPE(a) 					ofxScreenSaverParameters::getParamTypeName(ofxScreenSaverParameters::get().getParam(a)["val"].type())
 #define ADD_SSAVER_PARAM(name, tagID, value) 		ofxScreenSaverParameters::get().addParameter(name, tagID, value)
 #define UDPATE_SSAVER_PARAM(nameOrTag, value) 		ofxScreenSaverParameters::get().updateParameter(nameOrTag, value)
@@ -78,6 +79,17 @@ public:
 			return false;
 		}
 	}
+
+	// PARAM EXISTS /////////////////////////////////////////////////////////////////////////////
+
+	bool paramExists(long tagID){
+		return paramsByID.end() != paramsByID.find(tagID);
+	}
+
+	bool paramExists(const string & paramName){
+		return paramsByName.end() != paramsByName.find(paramName);
+	}
+
 
 	// GET PARAM ////////////////////////////////////////////////////////////////////////////////
 

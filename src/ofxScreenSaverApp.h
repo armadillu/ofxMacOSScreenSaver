@@ -29,6 +29,10 @@ public:
 
 	virtual bool hasConfigureSheet(){return true;};
 
+	//the user changed some settings, you should apply changes by re-querying your params with GET_SSAVER_PARAM()
+	//and reacting accordingly
+	void reloadSSaverSettings();
+
 protected:
 
 };
